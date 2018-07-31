@@ -1,0 +1,122 @@
+﻿<Page
+    x:Class="KalAcademyMusicApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:data="using:KalAcademyMusicApp.Models"
+    xmlns:converters="using:KalAcademyMusicApp"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:ImageSourceConverter x:Key="ImageSourceConverter" />
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <SplitView Name="MySplitView" Grid.Row="0" DisplayMode="CompactOverlay" OpenPaneLength="240" CompactPaneLength="60" HorizontalAlignment="Stretch" Background="{ThemeResource SystemControlBaseMediumLowAcrylicWindowMediumBrush}" PaneBackground="{ThemeResource SystemControlBaseLowAcrylicElementBrush}">
+            <SplitView.Pane>
+                <StackPanel>
+
+                    <Button Name="HamburgerButton" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" FontSize="40"  Click="HamburgerButton_Click" Margin="0,30,0,0" Background="Transparent" />
+
+                    <ListBox SelectionMode="Single" Name="IconsList" SelectionChanged="LeftMenuOptionSelected" SelectedIndex="0" Background="Transparent">
+                        <ListBoxItem Name="HomeListBoxItem">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="36" Text="&#xEA8A;" />
+                                <TextBlock Text="Home" FontSize="20" Margin="20,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Name="MyCollectionListBoxItem">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="36" Text="&#xE728;" />
+                                <TextBlock Text="Collection" FontSize="20" Margin="20,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Name="MusicPlayerListBoxItem">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="36" Text="&#xE768;" />
+                                <TextBlock Text="Music Player" FontSize="20" Margin="20,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Name="AddSongListBoxItem" >
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="36" Text="&#xE710;" />
+                                <TextBlock Text="Add Song" FontSize="20" Margin="20,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Name="EditInfoListBoxItem" IsEnabled="False">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="36" Text="&#xE70F;" />
+                                <TextBlock Text="Edit Song" FontSize="20" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </ListBoxItem>
+                    </ListBox>
+                </StackPanel>
+            </SplitView.Pane>
+            <SplitView.Content>
+                <Grid x:Name="LayoutRoot">
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <!--<RowDefinition Height="*"/>-->
+                    </Grid.RowDefinitions>
+
+                    <StackPanel x:Name="Searchby" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,30,0,20">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="24" Text="&#xE721;" VerticalAlignment="Center" Margin="12,0" />
+                        <TextBox x:Name="tbsearch" PlaceholderText="Search" Width="500" TextChanged="OnTextChanged" />
+                    </StackPanel>
+
+                    <MediaPlayerElement x:Name="MediaPlayerElement" AreTransportControlsEnabled="True" Height="Auto" Width="Auto" Stretch="UniformToFill" Grid.Row="1" Visibility="Collapsed">
+                        <MediaPlayerElement.TransportControls>
+                            <MediaTransportControls IsFastForwardButtonVisible="True" IsFastForwardEnabled="True" IsFastRewindButtonVisible="True" IsFastRewindEnabled="True" IsStopButtonVisible="True" IsStopEnabled="True" IsFullWindowButtonVisible="False" IsFullWindowEnabled="False" IsPlaybackRateButtonVisible="True" IsPlaybackRateEnabled="False" />
+                        </MediaPlayerElement.TransportControls>
+                    </MediaPlayerElement>
+
+                    <Grid x:Name="SongCollection" Grid.Row="1">
+                        <GridView x:Name="SongCollectionView" ItemsSource="{x:Bind MainModel.Songs}" SelectionChanged="SongCollectionView_SelectionChanged">
+                            <GridView.ItemTemplate>
+                                <DataTemplate  x:DataType="data:Song">
+                                    <StackPanel Margin="20" Width="160">
+                                        <Image Width="120" Height="120" HorizontalAlignment="Center" Source="{Binding ImagePath, Converter={StaticResource ImageSourceConverter}}" />
+                                        <TextBlock FontSize="16" Text="{x:Bind Name}" FontWeight="Bold" HorizontalAlignment="Center" />
+                                        <TextBlock Text="{x:Bind Artist}" HorizontalAlignment="Center" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Click="PlaySong_Click" FontSize="24" FontFamily="Segoe MDL2 Assets" Content="&#xE768;" Background="Transparent" />
+                                            <Button Click="AddToFavorite_Click"  FontSize="24" FontFamily="Segoe MDL2 Assets" Background="Transparent">
+                                                <Button.Content>
+                                                    <SymbolIcon Symbol="{x:Bind GetSymbol()}" />
+                                                </Button.Content>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridView.ItemTemplate>
+                        </GridView>
+                    </Grid>
+
+                    <StackPanel x:Name="EditInfoArea" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+                        <Image x:Name="EditInfoArea_AlbumImage" Width="200" HorizontalAlignment="Center" Margin="4" />
+                        <TextBox x:Name="EditInfoArea_AlbumName" PlaceholderText="Album" Width="200" Margin="4" />
+                        <TextBox x:Name="EditInfoArea_SongName" PlaceholderText="Song Name" Width="200" Margin="4" />
+                        <TextBox x:Name="EditInfoArea_ArtistName" PlaceholderText="Artist Name" Width="200" Margin="4" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
+                            <StackPanel Orientation="Vertical">
+                                <Button x:Name="SaveSongInfoButton" Click="SaveSongInfo" FontSize="48" FontFamily="Segoe MDL2 Assets" Content="&#xE74E;" Background="Transparent" HorizontalAlignment="Center" Margin="4" />
+                                <TextBlock Text="Save" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4" />
+                            </StackPanel>
+                            <StackPanel Orientation="Vertical">
+                                <Button x:Name="ChangeAlbumImageButton" Click="ChangeAlbumImage" FontSize="48" FontFamily="Segoe MDL2 Assets" Content="&#xEE71;" Background="Transparent" HorizontalAlignment="Center" Margin="4" />
+                                <TextBlock Text="Change Image" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    
+                </Grid>
+            </SplitView.Content>
+        </SplitView>
+    </Grid>
+</Page>
